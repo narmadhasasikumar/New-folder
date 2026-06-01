@@ -1,0 +1,28 @@
+export const translations = {
+  en: {
+    siteName: "PSG Hospitals",
+    pageTitle: "Smart Navigation System",
+    homeSubtitle: "Scan a hospital QR code or choose your current location and destination.",
+    currentLocation: "Current Location",
+    destination: "Destination",
+    findRoute: "Find Shortest Route",
+    quickActions: "Quick actions",
+    howItWorks: "How it works",
+    scannerTitle: "QR Scanner",
+    navigationResult: "Navigation Result",
+    adminDashboard: "Admin Dashboard",
+  },
+  ta: {
+    siteName: "பி.எஸ்.ஜி மருத்துவமனை",
+    pageTitle: "ஸ்மார்ட் வழிசெலுத்தல் அமைப்பு",
+    homeSubtitle: "மருத்துவமனை QR கோடை ஸ்கேன் செய்து உங்கள் இடம் மற்றும் இலக்கைத் தேர்ந்தெடுக்கவும்.",
+    currentLocation: "தற்போதைய இருப்பிடம்",
+    destination: "இலக்கு",
+    findRoute: "குறுகிய பாதையை கண்டறிதல்",
+    quickActions: "விரைவு செயல்கள்",
+    howItWorks: "இது எப்படி வேலை செய்கிறது",
+    scannerTitle: "QR ஸ்கேனர்",
+    navigationResult: "வழிசெலுத்தல் முடிவு",
+    adminDashboard: "நிர்வாக டாஷ்போர்டு",
+  },
+};
