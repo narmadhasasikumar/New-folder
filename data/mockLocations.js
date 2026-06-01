@@ -1,0 +1,348 @@
+const mockLocations = [
+  {
+    _id: "Main entrance",
+    name: "Main entrance",
+    floor: 1,
+    landmark: "Hospital Main Entrance",
+    description: "Primary entry for patients and visitors.",
+    connections: [
+      { to: "Seating area", distance: 8, direction: "Go straight from Main entrance. Seating area will be ahead on your left." },
+      { to: "Reception", distance: 10, direction: "Move towards Reception on the right side." },
+    ],
+  },
+  {
+    _id: "Seating area",
+    name: "Seating area",
+    floor: 1,
+    landmark: "Patient Waiting Area",
+    description: "Waiting area near the main entrance.",
+    connections: [
+      { to: "Pharmacy", distance: 12, direction: "Continue straight towards Pharmacy." },
+      { to: "Main entrance", distance: 8, direction: "Move straight towards Main entrance." },
+      { to: "Dental", distance: 25, direction: "Move straight towards corridor and turn immediate left towards Dental."}
+    ],
+  },
+  {
+    _id: "Reception",
+    name: "Reception",
+    floor: 1,
+    landmark: "Help Desk",
+    description: "Information desk and check-in counter.",
+    connections: [
+      { to: "Insurance department", distance: 14, direction: "Move straight and turn immediate right towards Insurance department." },
+      { to: "MRD", distance: 10, direction: "Turn right and Move forward towards MRD." },
+      { to: "Main entrance", distance: 10, direction: "Move back towards Main entrance." }
+    ],
+  },
+  {
+    _id: "Pharmacy",
+    name: "Pharmacy",
+    floor: 1,
+    landmark: "Medicine Collection Counter",
+    description: "Pharmacy for prescriptions and medical supplies.",
+    connections: [
+      { to: "Seating area", distance: 12, direction: "Move towards Seating area in front of Pharmacy." },
+    ],
+  },
+  {
+    _id: "Pediatric",
+    name: "Pediatric",
+    floor: 1,
+    landmark: "Children Care Unit",
+    description: "Pediatric department for child healthcare.",
+    connections: [
+      { to: "Dental", distance: 12, direction: "Move straight towards corridor. Dental will be nearby." },
+      { to: "Fetal medicine", distance: 10, direction: "Continue straight and Fetal medicine will be on your left." },
+      { to: "Geriatric", distance: 5 , direction: "Opposite to Geriatric is Pediatric"}
+    ],
+  },
+  {
+    _id: "Dental",
+    name: "Dental",
+    floor: 1,
+    landmark: "Dental Consultation Room",
+    description: "Dental care and consultation rooms.",
+    connections: [
+      { to: "Pediatric", distance: 12, direction: "Move forward and Pediatric will be ahead." },
+      { to: "Seating area", distance: 25, direction: "Turn right and Go straight towards Seating area on your right." },
+      { to: "Geriatric", distance: 5 , direction: "Opposite to Geriatric is Dental."},
+      { to: "Insurance department", distance: 5, direction: "Cross the main corridor to reach Insurance department."},
+    ],
+  },
+  {
+    _id: "Fetal medicine",
+    name: "Fetal medicine",
+    floor: 1,
+    landmark: "Fetal Medicine Section",
+    description: "Fetal medicine and maternity care.",
+    connections: [
+      { to: "OBG", distance: 10, direction: "Move straight and you can find OBG ahead." },
+      { to: "Orthopedic", distance: 5, direction: "Opposite to Orthopedic is Fetal medicine." },
+      { to: "Pediatric", distance: 10, direction: "Move back towards corridor to find Pediatric." }
+    ],
+  },
+  {
+    _id: "OBG",
+    name: "OBG",
+    floor: 1,
+    landmark: "Obstetrics and Gynecology",
+    description: "OBG ward for maternity and gynecology.",
+    connections: [
+      { to: "Orthopedic", distance: 18, direction: "Continue straight towards Orthopedic on your left." },
+      { to: "Fetal medicine", distance: 10, direction: "Continue straight towards Fetal medicine on your right." },
+    ],
+  },
+  {
+    _id: "Orthopedic",
+    name: "Orthopedic",
+    floor: 1,
+    landmark: "Orthopedic Department",
+    description: "Orthopedic care and treatment.",
+    connections: [
+      { to: "Geriatric", distance: 14, direction: "Move straight towards corridor and Geriatric department will be ahead." },
+      { to: "OBG", distance: 18, direction: "Go straight in opposite direction of corridor towards OBG." },
+      { to: "Fetal medicine", distance: 5, direction: "Opposite of Orthopedic is Fetal medicine. "},
+    ],
+  },
+  {
+    _id: "Geriatric",
+    name: "Geriatric",
+    floor: 1,
+    landmark: "Senior Citizen Care",
+    description: "Geriatric care for senior patients.",
+    connections: [
+      { to: "Orthopedic", distance: 14, direction: "Move back towards Orthopedic department." },
+      { to: "Lift 1", distance: 16, direction: " Go straight towards corridor and turn left. "},
+      { to: "Pediatric", distance: 5, direction: "Opposite of Geriatric is Pediatric. "},
+      { to: "Dental", distance: 5, direction: "Opposite of Geriatric is Dental. "},
+      { to: "Billing", distance: 5, direction: "Cross the main corridor to reach Billing."},
+    ],
+  },
+  {
+    _id: "Lift 1",
+    name: "Lift 1",
+    floor: 1,
+    landmark: "Lift Near Geriatric",
+    description: "Lift 1 provides vertical access within the hospital.",
+    connections: [
+      { to: "Blood collection lab", distance: 16, direction: "Continue straight towards Blood collection lab through corridor and turn left near Lift 2." },
+      { to: "Geriatric", distance: 16, direction: "Move towards main entrance and Turn right towards Geriatric." },
+      { to: "Gents Toilet", distance: 5, direction: "Cross the main corridor to reach Gents Toilet."},
+    ],
+  },
+  {
+    _id: "Blood collection lab",
+    name: "Blood collection lab",
+    floor: 1,
+    landmark: "Blood Sample Collection",
+    description: "Lab for blood tests and sample collection.",
+    connections: [
+      { to: "EMD", distance: 12, direction: "Go straight and EMD will be opposite." },
+      { to: "Lift 2", distance: 8, direction: "Turn right and move towards Lift 2." },
+      { to: "Home care service", distance: 5, direction: "Cross the main corridor to reach Homecare service."},
+    ],
+  },
+  {
+    _id: "Lift 2",
+    name: "Lift 2",
+    floor: 1,
+    landmark: "Lift Near Lab",
+    description: "Lift near the laboratory area.",
+    connections: [
+      { to: "Blood collection lab", distance: 8, direction: "Move straight and turn left towards Blood collection lab." },
+    ],
+  },
+  {
+    _id: "EMD",
+    name: "EMD",
+    floor: 1,
+    landmark: "Emergency Medical Department",
+    description: "Emergency care and urgent medical treatment.",
+    connections: [
+      { to: "Blood collection lab", distance: 12, direction: "Move straight and Blood collection lab will be opposite." },
+    ],
+  },
+  {
+    _id: "Insurance department",
+    name: "Insurance department",
+    floor: 1,
+    landmark: "Insurance Claim Section",
+    description: "Insurance and billing support.",
+    connections: [
+      { to: "Neuro surgery", distance: 18, direction: "Move towards Neuro surgery, which is on your right side." },
+      { to: "Reception", distance: 14, direction: "Turn left and move through corridor, Reception will be on your left. " },
+      { to: "Billing", distance: 5, direction: "Opposite of Billing is Insurance department. "},
+      { to: "Dental", distance: 5, direction: "Cross the main corridor to reach Dental."},
+    ],
+  },
+  {
+    _id: "Billing",
+    name: "Billing",
+    floor: 1,
+    landmark: "Billing Counter",
+    description: "Payments and billing services.",
+    connections: [
+      { to: "Gents Toilet", distance: 10, direction: "Move forward and turn right Gents Toilet will be ahead." },
+      { to: "Gastro Entrology", distance: 16, direction: "Move towards Gastro Entrology, which is on your left side." },
+      { to: "Insurance department", distance: 5, direction: "Opposite of Billing is Insurance department. "},
+      { to: "Geriatric", distance: 5, direction: "Cross the main corridor to reach Geriatric."},
+    ],
+  },
+  {
+    _id: "Gents Toilet",
+    name: "Gents Toilet",
+    floor: 1,
+    landmark: "Restroom Area",
+    description: "General restroom facilities.",
+    connections: [
+      { to: "Stairs", distance: 8, direction: "Continue through corridor towards Stairs." },
+      { to: "Billing", distance: 10, direction: "Move back through corridor towards entrance and turn immediate left for Billing." },
+    ],
+  },
+  {
+    _id: "Stairs",
+    name: "Stairs",
+    floor: 1,
+    landmark: "Central Staircase",
+    description: "Central stairs connecting floors.",
+    connections: [
+      { to: "Lift 3", distance: 10, direction: "Continue through corridor towards Lift 3." },
+      { to: "Gents Toilet", distance: 8, direction: "Continue through corridor towards Gents Toilet." },
+    ],
+  },
+  {
+    _id: "Lift 3",
+    name: "Lift 3",
+    floor: 1,
+    landmark: "Lift Near Home Care",
+    description: "Lift 3 near home care services.",
+    connections: [
+      { to: "Home care service", distance: 14, direction: "Move straight and turn right towards Home care service." },
+      { to: "Stairs", distance: 10, direction: "Move through corridor towards Stairs." },
+    ],
+  },
+  {
+    _id: "Home care service",
+    name: "Home care service",
+    floor: 1,
+    landmark: "Home Care Unit",
+    description: "Support services for home care.",
+    connections: [
+      { to: "HOD room", distance: 10, direction: "Continue straight and HOD room will be ahead." },
+      { to: "Lift 3", distance: 14, direction: "Turn left and Move back towards Lift 3." },
+      { to: "Ultrasound", distance: 5, direction: "Opposite of Ultrasound is Homecare service. "},
+      { to: "Blood collection lab", distance: 5, direction: "Cross the main corridor to reach Blood collection lab."},
+    ],
+  },
+  {
+    _id: "HOD room",
+    name: "HOD room",
+    floor: 1,
+    landmark: "Head of Department Room",
+    description: "Head of Department office and meeting room.",
+    connections: [
+      { to: "Classroom", distance: 10, direction: "Move straight and Classroom will be ahead." },
+      { to: "Home care service", distance: 10, direction: "Move back towards corridor to reach Home care service." },
+    ],
+  },
+  {
+    _id: "Classroom",
+    name: "Classroom",
+    floor: 1,
+    landmark: "Training Classroom",
+    description: "Classroom for training and teaching.",
+    connections: [
+      { to: "MRI", distance: 12, direction: "Continue straight and MRI room will be opposite." },
+      { to: "HOD room", distance: 10, direction: "Move back towards HOD room." },
+    ],
+  },
+  {
+    _id: "Ultrasound",
+    name: "Ultrasound",
+    floor: 1,
+    landmark: "Ultrasound Scan Center",
+    description: "Ultrasound imaging and scans.",
+    connections: [
+      { to: "MRI", distance: 10, direction: "Move straight towards MRI." },
+      { to: "Home care service", distance: 10, direction: "Opposite ward of Homecare service is Ultrasound." },
+    ],
+  },
+  {
+    _id: "MRI",
+    name: "MRI",
+    floor: 1,
+    landmark: "MRI Scan Room",
+    description: "MRI scanning facility.",
+    connections: [
+      { to: "Ultrasound", distance: 10, direction: "Move towards Ultrasound room." },
+      { to: "Classroom", distance: 12, direction: "Opposite room of MRI is Classroom." },
+    ],
+  },
+  {
+    _id: "Neurology OPD",
+    name: "Neurology OPD",
+    floor: 1,
+    landmark: "Neurology Department",
+    description: "Neurology services and consultation.",
+    connections: [
+      { to: "Gastrology", distance: 14, direction: "Continue straight towards Gastro department on your right." },
+      { to: "HPBLT-Rheumatalogy", distance: 16, direction: "Continue straight towards HPBLT-Rheumatalogy on your left." },
+    ],
+  },
+  {
+    _id: "Gastrology",
+    name: "Gastrology",
+    floor: 1,
+    landmark: "Gastroenterology",
+    description: "Gastroenterology department.",
+    connections: [
+      { to: "Neurology OPD", distance: 12, direction: "Continue straight towards Neurology OPD." },
+      { to: "Gastro Entrology", distance: 14, direction: "Move back towards Gastro Entrology." },
+    ],
+  },
+  {
+    _id: "Neuro surgery",
+    name: "Neuro surgery",
+    floor: 1,
+    landmark: "Neuro Surgery Unit",
+    description: "Neurological surgery and operating theaters.",
+    connections: [
+      { to: "HPBLT-Rheumatalogy", distance: 12, direction: "Move towards HPBLT-Rheumatalogy." },
+      { to: "Insurance department", distance: 18, direction: "Move back towards corridor to reach Insurance department." },
+    ],
+  },
+  {
+    _id: "HPBLT-Rheumatalogy",
+    name: "HPBLT-Rheumatalogy",
+    floor: 1,
+    landmark: "HPBLT-Rheumatalogy",
+    description: "HPBLT-Rheumatalogy department.",
+    connections: [
+      { to: "OPD", distance: 14, direction: "Continue straight towards OPD." },
+      { to: "Neuro surgery", distance: 14, direction: "Move back towards corridor to reach Neuro surgery." },
+    ],
+  },
+  {
+    _id: "MRD",
+    name: "MRD",
+    floor: 1,
+    landmark: "Medical Records Department",
+    description: "Medical records and documentation services.",
+    connections: [
+      { to: "Reception", distance: 10, direction: "Move towards Reception." },
+    ],
+  },
+  {
+    _id: "Gastro Entrology",
+    name: "Gastro Entrology",
+    floor: 1,
+    landmark: "Near billing",
+    description: "Gastro Entrology department. ",
+    connections: [
+      { to: "Gastrology", distance: 12, direction: "Move towards Gastrology department." },
+      { to: "Billing", distance: 14, direction: "Move towards corridor to reach Billing." },
+    ],
+  },
+];
+
+export default mockLocations;
